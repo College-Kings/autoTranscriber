@@ -1,0 +1,8 @@
+__pycache__/
+backup/
+build/
+dist/
+
+*.spec
+*.rpy
+*.txt

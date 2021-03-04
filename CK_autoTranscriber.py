@@ -110,7 +110,7 @@ if __name__ == "__main__":
     label_Infomation.place(anchor="center", relx=0.5, rely=0.4)
 
     button_editSpeakers = tk.Button(window, text="Edit Speakers", command=editSpeakers.editSpeakers)
-    # button_editSpeakers.place(anchor="center", relx=0.5, rely=0.5)
+    button_editSpeakers.place(anchor="center", relx=0.5, rely=0.5)
 
     window.mainloop()
 

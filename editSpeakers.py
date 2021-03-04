@@ -5,7 +5,7 @@ import CK_autoTranscriber as main
 
 class EditSpeakers(tk.Frame):
 
-    entryVars = dict()
+    entryList = []
 
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
@@ -28,15 +28,14 @@ class EditSpeakers(tk.Frame):
         numRows = len(speakers) + 3
 
         for i in range(numRows):
-            EditSpeakers.entryVars[f"character{i}"] = dict()
 
-            EditSpeakers.entryVars[f"character{i}"]["character"] = tk.StringVar()
-            EditSpeakers.entryVars[f"character{i}"]["speaker"] = tk.StringVar()
-
-            self.key = tk.Entry(self.frame, textvariable=EditSpeakers.entryVars[f"character{i}"]["character"], width=20, fg="blue", font=("Arial", 16, "bold"))
-            self.value = tk.Entry(self.frame, textvariable=EditSpeakers.entryVars[f"character{i}"]["speaker"], width=20, fg="blue", font=("Arial", 16, "bold"))
+            self.key = tk.Entry(self.frame, width=20, fg="blue", font=("Arial", 16, "bold"))
+            self.value = tk.Entry(self.frame, width=20, fg="blue", font=("Arial", 16, "bold"))
             self.key.grid(row=i, column=0)
             self.value.grid(row=i, column=1)
+
+            EditSpeakers.entryList.append([self.key, self.value])
+
             try:
                 self.key.insert(0, speakersList[i][0])
                 self.value.insert(0, speakersList[i][1])
@@ -46,27 +45,26 @@ class EditSpeakers(tk.Frame):
         # Reset the scroll region to encompass the inner frame
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-def autoUpdateSpeakers(root):
-    speakers = dict()
-    try:
-        for i in range(len(EditSpeakers.entryVars)):
-            print(EditSpeakers.entryVars[f"character{i}"]["character"].get())
-            if EditSpeakers.entryVars[f"character{i}"]["character"].get():
-                speakers[EditSpeakers.entryVars[f"character{i}"]["character"].get()] = EditSpeakers.entryVars[f"character{i}"]["speaker"].get()
+    def autoUpdateSpeakers(self, parent):
+        speakers = dict()
+        # try:
+        for key, value in EditSpeakers.entryList:
+            if key.get():
+                speakers[key.get()] = value.get()
 
-        print(speakers)
         with open("speakers.json", "w") as f:
             json.dump(speakers, f, indent=4)
-
-    except Exception as e: print(e)
-    finally: root.destroy()
+        parent.destroy()
+        # except Exception as e: print(e)
+        # finally: 
 
 def editSpeakers():
     root = tk.Tk()
     root.title("Edit Speakers")
     root.geometry("500x500")
-    root.protocol('WM_DELETE_WINDOW', lambda: autoUpdateSpeakers(root))
     editSpeakers = EditSpeakers(root)
+
+    root.protocol('WM_DELETE_WINDOW', lambda: editSpeakers.autoUpdateSpeakers(root))
     editSpeakers.pack(side="top", fill="both", expand=True)
     root.mainloop()
 
