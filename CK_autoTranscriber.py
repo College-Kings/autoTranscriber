@@ -18,7 +18,7 @@ def openSpeakers():
 
 def renpyConvertor():
 
-    with open(filename, "r") as f:
+    with open(filename, "r", encoding="utf8") as f:
         lines = f.readlines()
 
     rpy_file = f"{filename[:-4]}.rpy"
@@ -80,7 +80,7 @@ def renpyConvertor():
 
             if hasSpeaker:
                 f.write('{} "{}"\n'.format(speaker, line.replace("\"", "\\\"")))
-                f.write("\nscene v8s\nwith dissolve\n")
+                f.write("\nscene v10s\nwith dissolve\n")
             else:
                 f.write(f"### ERROR: {line} ###\n")
 
