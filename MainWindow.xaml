@@ -9,7 +9,7 @@
         Title="Oscar's Auto Transcriber" Height="500" Width="450">
     <Grid>
         <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                 <GradientStop Color="#FF59C173" Offset="0"/>
                 <GradientStop Color="#FF5D26C1" Offset="1"/>
                 <GradientStop Color="#FFA17FE0" Offset="0.5"/>
