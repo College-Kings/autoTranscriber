@@ -1,8 +1,7 @@
-__pycache__/
-backup/
-build/
-dist/
+bin/
+obj/
+packages/
 
-*.spec
-*.rpy
-*.txt
+*.suo
+*.user
+*.pfx
