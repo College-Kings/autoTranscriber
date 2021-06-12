@@ -159,7 +159,7 @@ namespace Auto_Transcriber
         private void addLog(string text)
         {
             outputLog.Insert(0, text);
-            WindowOutput.Text = String.Join("\n", outputLog.ToArray());
+            WindowOutput.Text = string.Join("\n", outputLog.ToArray());
         }
 
         private void BrowseFiles_Click(object sender, RoutedEventArgs e)
@@ -177,7 +177,7 @@ namespace Auto_Transcriber
                     ConvertFile.Visibility = Visibility.Visible;
                 }
             }
-            rpyFile = Path.ChangeExtension(selectedFile, ".rpy");
+            rpyFile = Path.ChangeExtension(selectedFile.Trim(), ".rpy");
         }
 
         private void writeToRpyFile(string text)
@@ -250,6 +250,13 @@ namespace Auto_Transcriber
 
             StreamReader file = new StreamReader(selectedFile);
 
+            writeToRpyFile("# SCENE X: ");
+            writeToRpyFile("# Locations: ");
+            writeToRpyFile("# Characters: ");
+            writeToRpyFile("# Time: ");
+            writeToRpyFile("# Phone Images: ");
+            writeToRpyFile("");
+
             string line;
             bool isSpeaker = false;
             string speaker = "";
@@ -262,7 +269,7 @@ namespace Auto_Transcriber
                     continue;
                 }
 
-                if (line.StartsWith("-") && line.EndsWith("-"))
+                if (line.StartsWith("-"))
                 {
                     writeToRpyFile($"# {line}");
                     continue;
