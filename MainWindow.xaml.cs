@@ -114,7 +114,7 @@ namespace Auto_Transcriber
 
             ConvertFile.Visibility = Visibility.Hidden;
 
-            rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Oscar Six", "Auto Transcriber");
+            rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Oscar Six", "AutoTranscriber");
             speakerFile = Path.Combine(rootPath, "speakers.json");
             settingsFile = Path.Combine(rootPath, "settings.json");
 

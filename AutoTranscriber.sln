@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auto Transcriber", "Auto Transcriber.csproj", "{D747165A-D925-4266-8068-9A20A233584B}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Oscars Installer", "..\Oscars Installer\Oscars Installer.vdproj", "{29F274B2-775C-4D36-9F72-CBAB069C4BEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTranscriber", "AutoTranscriber.csproj", "{D747165A-D925-4266-8068-9A20A233584B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +15,6 @@ Global
 		{D747165A-D925-4266-8068-9A20A233584B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D747165A-D925-4266-8068-9A20A233584B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D747165A-D925-4266-8068-9A20A233584B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29F274B2-775C-4D36-9F72-CBAB069C4BEA}.Debug|Any CPU.ActiveCfg = Debug
-		{29F274B2-775C-4D36-9F72-CBAB069C4BEA}.Debug|Any CPU.Build.0 = Debug
-		{29F274B2-775C-4D36-9F72-CBAB069C4BEA}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
