@@ -105,7 +105,7 @@ namespace Auto_Transcriber
         };
         private IDictionary<string, string> settings = new Dictionary<string, string>()
         {
-            {"GameVersion", "v10"}
+            {"GameVersion", "v12"}
         };
 
         public MainWindow()
@@ -210,37 +210,32 @@ namespace Auto_Transcriber
             }
             message.Trim(' ');
 
-            if (messageArray[1] == "Message")
+            switch (messageArray[1])
             {
-                writeToRpyFile($"## $ contact_{contact}.newMessage(\"{message}\", queue=True)");
-            }
-            else if (messageArray[1] == "ImageMessage")
-            {
-                writeToRpyFile($"## $ contact_{contact}.newImgMessage(\"{message}\", queue=True)");
-            }
-            else if (messageArray[1] == "Reply")
-            {
-                writeToRpyFile($"## $ contact_{contact}.addReply(\"{message}\", func=None)");
-            }
-            else if (messageArray[1] == "ImageReply")
-            {
-                writeToRpyFile($"## $ contact_{contact}.addImgReply(\"{message}\", func=None)");
-            }
-            else if (messageArray[1] == "KiwiiPost")
-            {
-                writeToRpyFile($"## $ newKiwiiPost = KiwiiPost(\"{contact}\", image, \"{message}\", mentions=None)");
-            }
-            else if (messageArray[1] == "KiwiiComment")
-            {
-                writeToRpyFile($"## $ newKiwiiPost.newComment(\"{contact}\", \"{message}\", mentions=None, queue=True)");
-            }
-            else if (messageArray[1] == "KiwiiReply")
-            {
-                writeToRpyFile($"## $ newKiwiiPost.addReply(\"{message}\", func=None, mentions=None)");
-            }
-            else
-            {
-                writeToRpyFile($"### ERROR: {line}");
+                case "Message":
+                    writeToRpyFile($"## $ contact_{contact}.newMessage(\"{message}\", queue=True)");
+                    break;
+                case "ImageMessage":
+                    writeToRpyFile($"## $ contact_{contact}.newImgMessage(\"{message}\", queue=True)");
+                    break;
+                case "Reply":
+                    writeToRpyFile($"## $ contact_{contact}.addReply(\"{message}\", func=None)");
+                    break;
+                case "ImageReply":
+                    writeToRpyFile($"## $ contact_{contact}.addImgReply(\"{message}\", func=None)");
+                    break;
+                case "KiwiiPost":
+                    writeToRpyFile($"## $ newKiwiiPost = KiwiiPost(\"{contact}\", image, \"{message}\", mentions=None)");
+                    break;
+                case "KiwiiComment":
+                    writeToRpyFile($"## $ newKiwiiPost.newComment(\"{contact}\", \"{message}\", mentions=None, queue=True)");
+                    break;
+                case "KiwiiReply":
+                    writeToRpyFile($"## $ newKiwiiPost.addReply(\"{message}\", func=None, mentions=None)");
+                    break;
+                default:
+                    writeToRpyFile($"### ERROR: {line}");
+                    break;
             }
         }
 
@@ -260,7 +255,8 @@ namespace Auto_Transcriber
             string line;
             bool isSpeaker = false;
             string speaker = "";
-            while ((line = file.ReadLine()) != null){
+            while ((line = file.ReadLine()) != null)
+            {
                 line = line.Trim();
 
                 if (string.IsNullOrEmpty(line))
