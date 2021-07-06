@@ -134,7 +134,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="version.txt" />
+    <Resource Include="version.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\icon.ico" />
