@@ -15,6 +15,7 @@ namespace Auto_Transcriber
         private string rootPath;
         private string speakerFile;
         private string settingsFile;
+        private string logFile;
         private string selectedFile;
         private string rpyFile;
 
@@ -115,42 +116,39 @@ namespace Auto_Transcriber
             ConvertFile.Visibility = Visibility.Hidden;
 
             rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Oscar Six", "AutoTranscriber");
+            logFile = Path.Combine(rootPath, "log.txt");
             speakerFile = Path.Combine(rootPath, "speakers.json");
             settingsFile = Path.Combine(rootPath, "settings.json");
 
             Directory.CreateDirectory(rootPath);
 
+            File.Create(logFile).Dispose(); // Create empty log file
+
             if (File.Exists(settingsFile))
             {
                 addLog("Loading settings file...");
                 settings = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(settingsFile));
+                addLog("Loaded settings file.");
             }
             else
             {
                 addLog("No settings file found. Creating default settings file...");
-
-                using (FileStream fs = File.Create(settingsFile))
-                {
-                    fs.Close();
-                    File.WriteAllText(settingsFile, JsonSerializer.Serialize(settings));
-                }
+                File.WriteAllText(settingsFile, JsonSerializer.Serialize(settings));
+                addLog("Created default settings file.");
             }
 
             if (File.Exists(speakerFile))
             {
                 addLog("Loading speaker file...");
                 speakers = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(speakerFile));
+                addLog("Loaded speaker file.");
             }
             else
             {
                 addLog("No speaker file found. Creating default speaker file...");
-
-                using (FileStream fs = File.Create(speakerFile))
-                {
-                    fs.Close();
-                    JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-                    File.WriteAllText(speakerFile, JsonSerializer.Serialize(speakers, jsonOptions));
-                }
+                JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+                File.WriteAllText(speakerFile, JsonSerializer.Serialize(speakers, jsonOptions));
+                addLog("Created default speaker file.");
             }
 
             GameVersion.Text = settings["GameVersion"];
@@ -158,8 +156,11 @@ namespace Auto_Transcriber
 
         private void addLog(string text)
         {
+            using (StreamWriter sw = File.AppendText(logFile)) { sw.WriteLine(text); }
+
             outputLog.Insert(0, text);
             WindowOutput.Text = string.Join("\n", outputLog.ToArray());
+            
         }
 
         private void BrowseFiles_Click(object sender, RoutedEventArgs e)
@@ -175,17 +176,14 @@ namespace Auto_Transcriber
                     selectedFile = openFileDialog.FileName;
                     ChosenFile.Text = $"Selected File: {selectedFile}";
                     ConvertFile.Visibility = Visibility.Visible;
+                    rpyFile = Path.ChangeExtension(selectedFile.Trim(), ".rpy");
                 }
             }
-            rpyFile = Path.ChangeExtension(selectedFile.Trim(), ".rpy");
         }
 
         private void writeToRpyFile(string text)
         {
-            using (StreamWriter sw = File.AppendText(rpyFile))
-            {
-                sw.WriteLine(text);
-            }
+            using (StreamWriter sw = File.AppendText(rpyFile)) { sw.WriteLine(text); }
         }
 
         private void phoneCode(string line)
