@@ -19,6 +19,9 @@ namespace Auto_Transcriber
         private string selectedFile;
         private string rpyFile;
 
+        private string fileHeader = string.Empty;
+        private string fileMain = string.Empty;
+
         List<string> outputLog = new List<string>();
 
         public IDictionary<string, string> speakers = new Dictionary<string, string>()
@@ -237,64 +240,90 @@ namespace Auto_Transcriber
             }
         }
 
+        private void ProcessFileData()
+        {
+            List<string> characters = new List<string>
+            {
+                "# Characters:"
+            };
+
+            using (StreamReader file = new StreamReader(selectedFile))
+            {
+                string line;
+                bool isSpeaker = false;
+                string speaker = "";
+                while ((line = file.ReadLine()) != null)
+                {
+                    line = line.Trim();
+
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        fileMain += "\n";
+                    }
+
+                    else if (line.StartsWith("-"))
+                    {
+                        fileMain += $"# {line}";
+                    }
+
+                    else if (line.StartsWith("NEW"))
+                    {
+                        phoneCode(line);
+                    }
+
+                    else if (speakers.ContainsKey(line))
+                    {
+                        isSpeaker = true;
+                        speaker = speakers[line];
+                        if (!characters.Contains(line))
+                        {
+                            characters.Add(line);
+                            characters.Add("(Outfit: X)");
+                        }
+                    }
+
+                    else if (isSpeaker)
+                    {
+                        fileMain += $"{speaker} \"{line.Replace("\"", "\\\"")}\"\n";
+                        fileMain += "\n";
+                        fileMain += $"scene {settings["GameVersion"]}\n";
+                        fileMain += "with dissolve\n";
+                        isSpeaker = false;
+                    }
+
+                    else
+                    {
+                        fileMain += $"### ERROR: {line}";
+                    }
+                }
+            }
+
+            fileHeader += "# SCENE X: \n";
+            fileHeader += "# Locations: \n";
+            fileHeader += string.Join(" ", characters);
+            fileHeader += "\n# Time: \n";
+            fileHeader += "# Phone Images: ";
+
+            characters.Clear();
+        }
+
         private void ConvertFile_Click(object sender, RoutedEventArgs e)
         {
             speakers = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(speakerFile));
 
-            StreamReader file = new StreamReader(selectedFile);
+            ProcessFileData();
 
-            writeToRpyFile("# SCENE X: ");
-            writeToRpyFile("# Locations: ");
-            writeToRpyFile("# Characters: ");
-            writeToRpyFile("# Time: ");
-            writeToRpyFile("# Phone Images: ");
+            File.Create(rpyFile).Dispose(); // Create blank rpy file
+
+            writeToRpyFile(fileHeader);
             writeToRpyFile("");
-
-            string line;
-            bool isSpeaker = false;
-            string speaker = "";
-            while ((line = file.ReadLine()) != null)
-            {
-                line = line.Trim();
-
-                if (string.IsNullOrEmpty(line))
-                {
-                    writeToRpyFile("");
-                    continue;
-                }
-
-                if (line.StartsWith("-"))
-                {
-                    writeToRpyFile($"# {line}");
-                    continue;
-                }
-
-                if (line.StartsWith("NEW"))
-                {
-                    phoneCode(line);
-                    continue;
-                }
-
-                if (speakers.ContainsKey(line))
-                {
-                    isSpeaker = true;
-                    speaker = speakers[line];
-                    continue;
-                }
-
-                if (isSpeaker)
-                {
-                    writeToRpyFile($"{speaker} \"{line.Replace("\"", "\\\"")}\"\n");
-                    writeToRpyFile($"scene {settings["GameVersion"]}");
-                    writeToRpyFile("with dissolve");
-                    isSpeaker = false;
-                    continue;
-                }
-
-                writeToRpyFile($"### ERROR: {line}");
-            }
+            writeToRpyFile("");
+            writeToRpyFile(fileMain);
 
             addLog($"File successfully converted.\nNew File: {rpyFile}");
+
+            fileHeader = string.Empty;
+            fileMain = string.Empty;
         }
 
         private void EditSpeakers_Click(object sender, RoutedEventArgs e)
