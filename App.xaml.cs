@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Auto_Transcriber
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Oscar Six", "AutoTranscriber");
+            string logFile = Path.Combine(rootPath, "log.txt");
+
+            using (StreamWriter sw = File.AppendText(logFile))
+            {
+                sw.WriteLine(e.Exception);
+            }
+        }
     }
 }
