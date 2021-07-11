@@ -215,38 +215,35 @@ namespace Auto_Transcriber
             switch (messageArray[1])
             {
                 case "Message":
-                    writeToRpyFile($"## $ contact_{contact}.newMessage(\"{message}\", queue=True)");
+                    fileMain += $"## $ contact_{contact}.newMessage(\"{message}\", queue=True)";
                     break;
                 case "ImageMessage":
-                    writeToRpyFile($"## $ contact_{contact}.newImgMessage(\"{message}\", queue=True)");
+                    fileMain += $"## $ contact_{contact}.newImgMessage(\"{message}\", queue=True)";
                     break;
                 case "Reply":
-                    writeToRpyFile($"## $ contact_{contact}.addReply(\"{message}\", func=None)");
+                    fileMain += $"## $ contact_{contact}.addReply(\"{message}\", func=None)";
                     break;
                 case "ImageReply":
-                    writeToRpyFile($"## $ contact_{contact}.addImgReply(\"{message}\", func=None)");
+                    fileMain += $"## $ contact_{contact}.addImgReply(\"{message}\", func=None)";
                     break;
                 case "KiwiiPost":
-                    writeToRpyFile($"## $ newKiwiiPost = KiwiiPost(\"{contact}\", image, \"{message}\", mentions=None)");
+                    fileMain += $"## $ newKiwiiPost = KiwiiPost(\"{contact}\", image, \"{message}\", mentions=None)";
                     break;
                 case "KiwiiComment":
-                    writeToRpyFile($"## $ newKiwiiPost.newComment(\"{contact}\", \"{message}\", mentions=None, queue=True)");
+                    fileMain += $"## $ newKiwiiPost.newComment(\"{contact}\", \"{message}\", mentions=None, queue=True)";
                     break;
                 case "KiwiiReply":
-                    writeToRpyFile($"## $ newKiwiiPost.addReply(\"{message}\", func=None, mentions=None)");
+                    fileMain += $"## $ newKiwiiPost.addReply(\"{message}\", func=None, mentions=None)";
                     break;
                 default:
-                    writeToRpyFile($"### ERROR: {line}");
+                    fileMain += $"### ERROR: {line}";
                     break;
             }
         }
 
         private void ProcessFileData()
         {
-            HashSet<string> characters = new HashSet<string>
-            {
-                "# Characters:"
-            };
+            HashSet<string> characters = new HashSet<string>();
 
             using (StreamReader file = new StreamReader(selectedFile))
             {
@@ -264,7 +261,7 @@ namespace Auto_Transcriber
 
                     else if (line.StartsWith("-"))
                     {
-                        fileMain += $"# {line}";
+                        fileMain += $"# {line}\n";
                     }
 
                     else if (line.StartsWith("NEW"))
@@ -297,8 +294,8 @@ namespace Auto_Transcriber
 
             fileHeader += "# SCENE X: \n";
             fileHeader += "# Locations: \n";
-            fileHeader += string.Join(", ", characters.Select(character => $"{character} (Outfit: x)"));
-            fileHeader += "\n# Time: \n";
+            fileHeader += "# Characters: " + string.Join(", ", characters.Select(character => $"{character} (Outfit: x)")) + "\n";
+            fileHeader += "# Time: \n";
             fileHeader += "# Phone Images: ";
 
             characters.Clear();
