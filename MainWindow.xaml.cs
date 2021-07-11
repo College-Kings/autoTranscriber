@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -242,7 +243,7 @@ namespace Auto_Transcriber
 
         private void ProcessFileData()
         {
-            List<string> characters = new List<string>
+            HashSet<string> characters = new HashSet<string>
             {
                 "# Characters:"
             };
@@ -275,19 +276,15 @@ namespace Auto_Transcriber
                     {
                         isSpeaker = true;
                         speaker = speakers[line];
-                        if (!characters.Contains(line))
-                        {
-                            characters.Add(line);
-                            characters.Add("(Outfit: X)");
-                        }
+                        characters.Add(line);
                     }
 
                     else if (isSpeaker)
                     {
-                        fileMain += $"{speaker} \"{line.Replace("\"", "\\\"")}\"\n";
+                        fileMain += $"    {speaker} \"{line.Replace("\"", "\\\"")}\"\n";
                         fileMain += "\n";
-                        fileMain += $"scene {settings["GameVersion"]}\n";
-                        fileMain += "with dissolve\n";
+                        fileMain += $"    scene {settings["GameVersion"]}\n";
+                        fileMain += "    with dissolve\n";
                         isSpeaker = false;
                     }
 
@@ -300,7 +297,7 @@ namespace Auto_Transcriber
 
             fileHeader += "# SCENE X: \n";
             fileHeader += "# Locations: \n";
-            fileHeader += string.Join(" ", characters);
+            fileHeader += string.Join(", ", characters.Select(character => $"{character} (Outfit: x)"));
             fileHeader += "\n# Time: \n";
             fileHeader += "# Phone Images: ";
 
@@ -317,7 +314,7 @@ namespace Auto_Transcriber
 
             writeToRpyFile(fileHeader);
             writeToRpyFile("");
-            writeToRpyFile("");
+            writeToRpyFile($"label {settings["GameVersion"]}:");
             writeToRpyFile(fileMain);
 
             addLog($"File successfully converted.\nNew File: {rpyFile}");
